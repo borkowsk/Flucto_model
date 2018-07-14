@@ -1,9 +1,9 @@
 object Form1: TForm1
-  Left = 199
-  Top = 111
-  Width = 1100
-  Height = 667
-  Caption = 'Evolution in fluctuating enviroment v0.55'
+  Left = 683
+  Top = 151
+  Width = 374
+  Height = 661
+  Caption = 'Evolution in fluctuating enviroment v0.75'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,45 +11,41 @@ object Form1: TForm1
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 20
-  object pip: TImage
-    Left = 8
-    Top = 8
-    Width = 729
-    Height = 600
-  end
   object LabelRate: TLabel
-    Left = 744
-    Top = 104
+    Left = 16
+    Top = 88
     Width = 39
     Height = 20
     Caption = 'Rate:'
   end
   object Label2: TLabel
-    Left = 752
-    Top = 24
+    Left = 16
+    Top = 8
     Width = 43
     Height = 20
     Caption = 'Model'
   end
   object LabelFluct: TLabel
-    Left = 744
-    Top = 344
+    Left = 16
+    Top = 328
     Width = 117
     Height = 20
     Caption = 'Range of Fluct.: '
   end
   object LabelSigma: TLabel
-    Left = 744
-    Top = 144
+    Left = 16
+    Top = 128
     Width = 49
     Height = 20
     Caption = 'Sigma:'
   end
   object Label3: TLabel
-    Left = 744
-    Top = 184
+    Left = 16
+    Top = 168
     Width = 116
     Height = 16
     Caption = 'Initial concentration:'
@@ -61,8 +57,8 @@ object Form1: TForm1
     ParentFont = False
   end
   object Label4: TLabel
-    Left = 744
-    Top = 224
+    Left = 16
+    Top = 208
     Width = 117
     Height = 16
     Caption = 'Initial con. of mutant:'
@@ -74,22 +70,22 @@ object Form1: TForm1
     ParentFont = False
   end
   object Label5: TLabel
-    Left = 744
-    Top = 264
+    Left = 16
+    Top = 248
     Width = 75
     Height = 20
     Caption = 'Default X :'
   end
   object Label6: TLabel
-    Left = 744
-    Top = 304
+    Left = 16
+    Top = 288
     Width = 75
     Height = 20
     Caption = 'Default Y :'
   end
   object Label7: TLabel
-    Left = 744
-    Top = 384
+    Left = 16
+    Top = 368
     Width = 108
     Height = 16
     Caption = 'Num. of iterations :'
@@ -101,65 +97,74 @@ object Form1: TForm1
     ParentFont = False
   end
   object Label1: TLabel
-    Left = 744
-    Top = 576
+    Left = 16
+    Top = 536
     Width = 66
     Height = 20
     Caption = 'Pict. size:'
   end
   object LabelRefRat: TLabel
-    Left = 928
-    Top = 544
+    Left = 16
+    Top = 568
     Width = 97
     Height = 20
     Caption = 'Refresh rate :'
   end
+  object Label8: TLabel
+    Left = 152
+    Top = 496
+    Width = 53
+    Height = 20
+    Caption = 'K fact. :'
+  end
   object EditForRate: TEdit
-    Left = 864
-    Top = 96
+    Left = 136
+    Top = 80
     Width = 209
     Height = 28
     TabOrder = 0
     Text = 'Put "r" (rate) here'
     OnChange = EditForRateChange
   end
-  object OK: TButton
-    Left = 920
-    Top = 416
-    Width = 161
+  object ButtonInvExt: TButton
+    Left = 192
+    Top = 400
+    Width = 153
     Height = 25
     Caption = 'Invasion/Extinction'
     TabOrder = 1
-    OnClick = OKClick
+    OnClick = ButtonInvExtClick
   end
   object ComboBoxModel: TComboBox
-    Left = 816
-    Top = 24
+    Left = 72
+    Top = 8
     Width = 233
     Height = 28
     ItemHeight = 20
-    ItemIndex = 3
+    ItemIndex = 0
     TabOrder = 2
-    Text = 'Model 4'
+    Text = 'Model 1'
     OnChange = ComboBoxModelChange
     Items.Strings = (
       'Model 1'
       'Model 2'
-      'Model 3'
-      'Model 4')
+      'Model 3 uniform'
+      'Model 4'
+      'Model 3 two-valued'
+      'Model 3 normal')
   end
   object EditModelIndex: TEdit
-    Left = 1056
-    Top = 24
-    Width = 25
+    Left = 312
+    Top = 8
+    Width = 33
     Height = 28
     TabOrder = 3
-    Text = '4'
+    Text = '1'
     OnChange = EditModelIndexChange
   end
   object EditFluctuation: TEdit
-    Left = 864
-    Top = 336
+    Left = 136
+    Top = 320
     Width = 209
     Height = 28
     TabOrder = 4
@@ -167,8 +172,8 @@ object Form1: TForm1
     OnChange = EditFluctuationChange
   end
   object EditSigma: TEdit
-    Left = 864
-    Top = 136
+    Left = 136
+    Top = 120
     Width = 209
     Height = 28
     TabOrder = 5
@@ -176,8 +181,8 @@ object Form1: TForm1
     OnChange = EditSigmaChange
   end
   object EditConcentration: TEdit
-    Left = 864
-    Top = 176
+    Left = 136
+    Top = 160
     Width = 209
     Height = 28
     TabOrder = 6
@@ -185,8 +190,8 @@ object Form1: TForm1
     OnChange = EditConcentrationChange
   end
   object EditMutConcentration: TEdit
-    Left = 864
-    Top = 216
+    Left = 136
+    Top = 200
     Width = 209
     Height = 28
     TabOrder = 7
@@ -194,25 +199,26 @@ object Form1: TForm1
     OnChange = EditMutConcentrationChange
   end
   object ButtonFittnes: TButton
-    Left = 920
-    Top = 512
-    Width = 161
+    Left = 192
+    Top = 432
+    Width = 153
     Height = 25
     Caption = '"Fittness"'
+    Enabled = False
     TabOrder = 8
   end
   object ButtonESS: TButton
-    Left = 920
-    Top = 448
-    Width = 161
+    Left = 192
+    Top = 464
+    Width = 153
     Height = 25
     Caption = 'Branching mapp'
     TabOrder = 9
     OnClick = ButtonESSClick
   end
   object EditXdef: TEdit
-    Left = 864
-    Top = 256
+    Left = 136
+    Top = 240
     Width = 209
     Height = 28
     TabOrder = 10
@@ -220,8 +226,8 @@ object Form1: TForm1
     OnChange = EditXdefChange
   end
   object EditYdef: TEdit
-    Left = 864
-    Top = 296
+    Left = 136
+    Top = 280
     Width = 209
     Height = 28
     TabOrder = 11
@@ -229,8 +235,8 @@ object Form1: TForm1
     OnChange = EditYdefChange
   end
   object ButtonYvSigma: TButton
-    Left = 744
-    Top = 448
+    Left = 16
+    Top = 400
     Width = 169
     Height = 25
     Caption = 'Y versus Sigma'
@@ -238,8 +244,8 @@ object Form1: TForm1
     OnClick = ButtonYvSigmaClick
   end
   object ButtonYvFluct: TButton
-    Left = 744
-    Top = 512
+    Left = 16
+    Top = 464
     Width = 169
     Height = 25
     Caption = 'Y versus Fluct'
@@ -247,8 +253,8 @@ object Form1: TForm1
     OnClick = ButtonYvFluctClick
   end
   object EditIterations: TEdit
-    Left = 864
-    Top = 376
+    Left = 136
+    Top = 360
     Width = 209
     Height = 28
     TabOrder = 14
@@ -256,8 +262,8 @@ object Form1: TForm1
     OnChange = EditIterationsChange
   end
   object ButtonYvR: TButton
-    Left = 744
-    Top = 480
+    Left = 16
+    Top = 432
     Width = 169
     Height = 25
     Caption = 'Y versus Rate'
@@ -265,84 +271,117 @@ object Form1: TForm1
     OnClick = ButtonYvRClick
   end
   object ButtonAdvanced: TButton
-    Left = 864
-    Top = 56
-    Width = 209
+    Left = 184
+    Top = 40
+    Width = 161
     Height = 25
     Caption = 'Advanced options'
     TabOrder = 16
     OnClick = ButtonAdvancedClick
   end
   object ButtonBranchFitt: TButton
-    Left = 920
-    Top = 480
-    Width = 161
+    Left = 16
+    Top = 496
+    Width = 129
     Height = 25
     Caption = 'Branching Fitt'
     TabOrder = 17
     OnClick = ButtonBranchFittClick
   end
-  object MyProgressBar: TProgressBar
-    Left = 8
-    Top = 616
-    Width = 729
-    Height = 16
-    Min = 0
-    Max = 100
-    TabOrder = 18
-  end
   object EditPipSize: TEdit
-    Left = 816
-    Top = 568
-    Width = 161
+    Left = 120
+    Top = 528
+    Width = 121
     Height = 28
-    TabOrder = 19
+    TabOrder = 18
     Text = 'Put picture size here'
     OnChange = EditPipSizeChange
   end
   object CheckBoxClean: TCheckBox
-    Left = 776
-    Top = 544
-    Width = 129
+    Left = 248
+    Top = 536
+    Width = 113
     Height = 17
     Caption = 'Clean picture'
     Checked = True
     State = cbChecked
-    TabOrder = 20
+    TabOrder = 19
   end
   object ButtonSavePip: TButton
-    Left = 888
-    Top = 608
-    Width = 193
+    Left = 16
+    Top = 600
+    Width = 169
     Height = 25
     Caption = 'Save this picture as ...'
-    TabOrder = 21
+    TabOrder = 20
     OnClick = ButtonSavePipClick
   end
   object CheckBoxAutoSave: TCheckBox
-    Left = 760
-    Top = 608
+    Left = 248
+    Top = 568
     Width = 97
     Height = 17
     Caption = 'Auto save'
-    TabOrder = 22
+    TabOrder = 21
   end
   object SpinEditRefRate: TSpinEdit
-    Left = 1032
-    Top = 544
-    Width = 49
+    Left = 120
+    Top = 560
+    Width = 121
     Height = 30
     MaxValue = 20
     MinValue = 0
-    TabOrder = 23
+    TabOrder = 22
     Value = 10
     OnChange = SpinEditRefRateChange
+  end
+  object ButtonBye: TButton
+    Left = 192
+    Top = 600
+    Width = 153
+    Height = 25
+    Caption = 'Bye! Bye!'
+    TabOrder = 23
+    OnClick = ButtonByeClick
+  end
+  object ButtonWhereIsPicture: TButton
+    Left = 8
+    Top = 40
+    Width = 161
+    Height = 25
+    Caption = 'Where is my picture?'
+    TabOrder = 24
+    OnClick = ButtonWhereIsPictureClick
+  end
+  object EditKFactor: TEdit
+    Left = 208
+    Top = 496
+    Width = 97
+    Height = 24
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Arial Narrow'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 25
+    Text = 'Change K Factor here.'
+    OnChange = EditKFactorChange
+  end
+  object ButtonSpecial: TButton
+    Left = 312
+    Top = 496
+    Width = 33
+    Height = 25
+    Caption = '!!!'
+    TabOrder = 26
+    OnClick = ButtonSpecialClick
   end
   object SavePipPictureDialog: TSavePictureDialog
     DefaultExt = '.bmp'
     InitialDir = '.'
     Title = 'Save picture as ...'
-    Left = 744
-    Top = 544
+    Left = 88
+    Top = 72
   end
 end

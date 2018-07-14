@@ -1,12 +1,13 @@
 unit smalltools;
 interface
-uses StdCtrls,Graphics;
+uses Types,StdCtrls,Graphics;
 
 procedure ChangeDoubleFromEditBox(var Value:double;var TheEdit:TEdit;min,max:double);
 procedure ChangeIntFromEditBox(var Value:integer;var TheEdit:TEdit;min,max:integer);
 function  Double2str(v:double;lengh,prec:byte):string;
 function  Int2str(v:longint;lengh:byte):string;
 procedure BorderedTextOut(const Canvas:TCanvas;var x1,y1:integer;ra,rb:integer;title:string);
+procedure FixWidthTextOut(const Canvas:TCanvas;var x1,y1:integer;width:integer;title:string);
 procedure DrawGraphConstrains(const Canvas:TCanvas;x1,y1:integer;ra:integer;Ytext,Xtext:string);
 
 implementation
@@ -19,6 +20,23 @@ with Canvas do
         TextOut(x1+ra+1,y1+rb+1,title);
         x1:=x1+TextWidth(title)+2+2*ra;
         y1:=y1+TextHeight(title)+2+4*rb;
+        end;
+end;
+
+procedure FixWidthTextOut(const Canvas:TCanvas;var x1,y1:integer;width:integer;title:string);
+var MyRect:TRect;
+begin
+with Canvas do
+        begin
+        MyRect.Left:=x1;
+        MyRect.Right:=x1+width;
+        MyRect.Top:=y1;
+        MyRect.Bottom:=y1+TextHeight(title)+2;
+        {FillRect(MyRect);
+        FrameRect(MyRect);}
+        TextRect(MyRect,x1,y1,title);
+        x1:=MyRect.Right;
+        y1:=MyRect.Bottom;
         end;
 end;
 

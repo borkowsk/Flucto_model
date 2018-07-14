@@ -5,92 +5,86 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Models, ExtDlgs, Spin, AdvOption, SmallTools,
-  ComCtrls;
+  ComCtrls,Visualisation;
 
-  var   modelIndex:integer=4;
-  var   pipSize:integer=200;
+  var   modelIndex:integer=1;
 
-
-  var RefreshRate:word=10;
-
-  var   clTable:array[-4..3] of  TColor=(clBlack,clFuchsia,clGreen,clLime,clYellow, clRed, clNavy,clTeal );
-  {var   clTable:array[0..3] of  TColor=(clGray,clRed,clBlue,clGreen);}
 type
   TForm1 = class(TForm)
-    EditForRate: TEdit;
-    pip: TImage;
-    OK: TButton;
     LabelRate: TLabel;
-    ComboBoxModel: TComboBox;
     Label2: TLabel;
-    EditModelIndex: TEdit;
-    EditFluctuation: TEdit;
     LabelFluct: TLabel;
-    EditSigma: TEdit;
     LabelSigma: TLabel;
-    EditConcentration: TEdit;
     Label3: TLabel;
-    EditMutConcentration: TEdit;
     Label4: TLabel;
-    ButtonFittnes: TButton;
-    ButtonESS: TButton;
     Label5: TLabel;
     Label6: TLabel;
+    Label7: TLabel;
+    Label1: TLabel;
+    LabelRefRat: TLabel;
+    EditForRate: TEdit;
+    ButtonInvExt: TButton;
+    ComboBoxModel: TComboBox;
+    EditModelIndex: TEdit;
+    EditFluctuation: TEdit;
+    EditSigma: TEdit;
+    EditConcentration: TEdit;
+    EditMutConcentration: TEdit;
+    ButtonFittnes: TButton;
+    ButtonESS: TButton;
     EditXdef: TEdit;
     EditYdef: TEdit;
     ButtonYvSigma: TButton;
     ButtonYvFluct: TButton;
     EditIterations: TEdit;
-    Label7: TLabel;
     ButtonYvR: TButton;
     ButtonAdvanced: TButton;
     ButtonBranchFitt: TButton;
-    MyProgressBar: TProgressBar;
-    Label1: TLabel;
-    LabelRefRat: TLabel;
     EditPipSize: TEdit;
     CheckBoxClean: TCheckBox;
     ButtonSavePip: TButton;
     CheckBoxAutoSave: TCheckBox;
     SpinEditRefRate: TSpinEdit;
     SavePipPictureDialog: TSavePictureDialog;
-    procedure OKClick(Sender: TObject);
+    ButtonBye: TButton;
+    ButtonWhereIsPicture: TButton;
+    EditKFactor: TEdit;
+    Label8: TLabel;
+    ButtonSpecial: TButton;
+
+    procedure ComboBoxModelChange(Sender: TObject);
+    procedure SpinEditRefRateChange(Sender: TObject);
+    
     procedure EditForRateChange(Sender: TObject);
     procedure EditPipSizeChange(Sender: TObject);
-    procedure ComboBoxModelChange(Sender: TObject);
+    procedure EditIterationsChange(Sender: TObject);
     procedure EditModelIndexChange(Sender: TObject);
     procedure EditSigmaChange(Sender: TObject);
     procedure EditConcentrationChange(Sender: TObject);
     procedure EditMutConcentrationChange(Sender: TObject);
     procedure EditFluctuationChange(Sender: TObject);
-    procedure ButtonSavePipClick(Sender: TObject);
-    procedure ButtonESSClick(Sender: TObject);
-    procedure SpinEditRefRateChange(Sender: TObject);
     procedure EditXdefChange(Sender: TObject);
     procedure EditYdefChange(Sender: TObject);
+
+    procedure ButtonInvExtClick(Sender: TObject);
     procedure ButtonYvSigmaClick(Sender: TObject);
     procedure ButtonYvFluctClick(Sender: TObject);
-    { Public declarations }
-    procedure PrintOnPip(var TheModel:AnyModel;stx,sty,size:integer);
-    procedure PrintBranchingOnPip(var TheModel:AnyModel;stx,sty,size:integer);
-    procedure PrintYvSigmaOnPip(var TheModel:AnyModel;stx,sty,size:integer);
-    procedure PrintYvFluctOnPip(var TheModel:AnyModel;stx,sty,size:integer);
-    procedure PrintYvROnPip(var TheModel:AnyModel;stx,sty,size:integer);
-    procedure FittBranchingOnPip(stx,sty,size:integer);
-    procedure EditIterationsChange(Sender: TObject);
+    procedure ButtonSavePipClick(Sender: TObject);
+    procedure ButtonESSClick(Sender: TObject);
     procedure ButtonYvRClick(Sender: TObject);
     procedure ButtonAdvancedClick(Sender: TObject);
     procedure ButtonBranchFittClick(Sender: TObject);
+    procedure ButtonByeClick(Sender: TObject);
+    procedure ButtonWhereIsPictureClick(Sender: TObject);
+    procedure EditKFactorChange(Sender: TObject);
+    { Public declarations }
+    procedure InitModels;
+    procedure FormCreate(Sender: TObject);
+    procedure ButtonSpecialClick(Sender: TObject);
   end;
 
 var
   Form1: TForm1;
-
-  TheModel1:model1;
-  TheModel2:model2;
-  TheModel3:model3;
-  TheModel4:model4;
-  CurrentModel:^AnyModel=nil;
 
 implementation
 
@@ -105,423 +99,188 @@ procedure TForm1.ButtonSavePipClick(Sender: TObject);
 var MyName:string;
 begin
 if CurrentModel=nil then exit;
+
+FormPicture.Show;FormPicture.BringToFront;
 MyName:=Int2str(pipSize,0)+CurrentModel^.TentativeBmpFileName;
 SavePipPictureDialog.FileName:=MyName;
 if SavePipPictureDialog.Execute then
         begin
         MyName:=SavePipPictureDialog.FileName;
-        pip.Picture.SaveToFile(MyName);
+        FormPicture.pip.Picture.SaveToFile(MyName);
         end;
-end;
-
-procedure TForm1.PrintOnPip(var TheModel:AnyModel;stx,sty,Size:integer);
-var     xstep,ystep,x,y:double;
-        a,b:integer;
-const   title= 'X versus Y plot' ;
-begin
-a:=1;b:=1;   BorderedTextOut(pip.Canvas,a,b,3,3,title);
-a:=a+2;b:=1; BorderedTextOut(pip.Canvas,a,b,3,3,TheModel.title);
-pip.Canvas.Pen.Color:=clMaroon;
-DrawGraphConstrains(pip.Canvas,stx-1,sty+size+1,-20,double2str(MinY,FlpLenght,FlpPrec),double2str(MinX,FlpLenght,FlpPrec)); {0,0}
-DrawGraphConstrains(pip.Canvas,stx+size+1,sty-1,20,double2str(MaxY,FlpLenght,FlpPrec),double2str(MaxX,FlpLenght,FlpPrec));  {Max,Max}
-pip.Canvas.Pen.Color:=clBlack;
-xstep:=abs(MaxX-MinX)/(Size);
-ystep:=abs(MaxY-MinY)/(Size);
-
-x:=MinX;
-a:=stx;
-while x<=MaxX do
-        begin
-        y:=MinY;
-        b:=sty+Size-1;
-
-        while y<=MaxY do
-                begin
-                if TheModel.IsInvasion(x,y) then
-                        begin
-                        if TheModel.WasSpecial<>0 then
-                                pip.Canvas.Pixels[a,b]:=clTable[TheModel.WasSpecial]
-                                else
-                                pip.Canvas.Pixels[a,b]:=clBlack
-                        end
-                        else
-                        begin
-                        if TheModel.WasSpecial<>0 then
-                                pip.Canvas.Pixels[a,b]:=clTable[TheModel.WasSpecial]
-                                else
-                                pip.Canvas.Pixels[a,b]:=clYellow;
-                        end;
-                dec(b);
-                y:=y+ystep;
-                end;
-
-        MyProgressBar.Position:=round( (100*(a-stx))/size );
-        inc(a);
-        x:=x+xstep;
-
-        if a mod RefreshRate = 0 then begin  Application.ProcessMessages; end;
-        end;
-end;
-
-procedure TForm1.PrintYvSigmaOnPip(var TheModel:AnyModel;stx,sty,size:integer);
-var     ystep,y:double;
-        sstep,sig:double;
-        a,b:integer;
-const   title= 'Sigma versus Y plot' ;
-begin
-a:=1;b:=1;   BorderedTextOut(pip.Canvas,a,b,3,3,title);
-a:=a+2;b:=1; BorderedTextOut(pip.Canvas,a,b,3,3,TheModel.title);
-pip.Canvas.Pen.Color:=clMaroon;
-DrawGraphConstrains(pip.Canvas,stx-1,sty+size+1,-20,double2str(MinY,FlpLenght,FlpPrec),double2str(MinSigma,FlpLenght,FlpPrec)); {0,0}
-DrawGraphConstrains(pip.Canvas,stx+size+1,sty-1,20,double2str(MaxY,FlpLenght,FlpPrec),double2str(MaxSigma,FlpLenght,FlpPrec));  {Max,Max}
-pip.Canvas.Pen.Color:=clBlack;
-ystep:=abs(MaxY-MinY)/(Size);
-sstep:=abs(MaxSigma-MinSigma)/(Size);
-sig:=MinSigma;
-a:=stx;
-while sig<=MaxSigma do
-        begin
-        y:=MinY;
-        b:=sty+Size-1;
-
-        while y<=MaxY do
-                begin
-                TheModel.SetSigma(sig);
-                if TheModel.IsInvasion(defaultX,y) then
-                        begin
-                        if TheModel.WasSpecial<>0 then
-                                pip.Canvas.Pixels[a,b]:=clTable[TheModel.WasSpecial]
-                                else
-                                pip.Canvas.Pixels[a,b]:=clBlack
-                        end
-                        else
-                        begin
-                        if TheModel.WasSpecial<>0 then
-                                pip.Canvas.Pixels[a,b]:=clTable[TheModel.WasSpecial]
-                                else
-                                pip.Canvas.Pixels[a,b]:=clYellow;
-                        end;
-                dec(b);
-                y:=y+ystep;
-                end;
-        MyProgressBar.Position:=round( (100*(a-stx))/size );
-        inc(a);
-        sig:=sig+sstep;
-        if a mod RefreshRate = 0 then begin Application.ProcessMessages; end;
-        end;
-end;
-
-procedure TForm1.PrintYvROnPip(var TheModel:AnyModel;stx,sty,size:integer);
-var     ystep,y:double;
-        rstep,r:double;
-        a,b:integer;
-const   title= 'R versus Y plot' ;
-begin
-a:=1;b:=1;   BorderedTextOut(pip.Canvas,a,b,3,3,title);
-a:=a+2;b:=1; BorderedTextOut(pip.Canvas,a,b,3,3,TheModel.title);
-pip.Canvas.Pen.Color:=clMaroon;
-DrawGraphConstrains(pip.Canvas,stx-1,sty+size+1,-20,double2str(MinY,FlpLenght,FlpPrec),double2str(MinRate,FlpLenght,FlpPrec)); {0,0}
-DrawGraphConstrains(pip.Canvas,stx+size+1,sty-1,20,double2str(MaxY,FlpLenght,FlpPrec),double2str(MaxRate,FlpLenght,FlpPrec));  {Max,Max}
-pip.Canvas.Pen.Color:=clBlack;
-
-ystep:=abs(MaxY-MinY)/(Size);
-rstep:=abs(MaxRate-MinRate)/(Size);
-r:=MinRate;
-a:=stx;
-while r<=MaxRate do
-        begin
-        y:=MinY;
-        b:=sty+Size-1;
-
-        while y<=MaxY do
-                begin
-                TheModel.SetR(r);
-                if TheModel.IsInvasion(defaultX,y) then
-                        begin
-                        if TheModel.WasSpecial<>0 then
-                                pip.Canvas.Pixels[a,b]:=clTable[TheModel.WasSpecial]
-                                else
-                                pip.Canvas.Pixels[a,b]:=clBlack
-                        end
-                        else
-                        begin
-                        if TheModel.WasSpecial<>0 then
-                                pip.Canvas.Pixels[a,b]:=clTable[TheModel.WasSpecial]
-                                else
-                                pip.Canvas.Pixels[a,b]:=clYellow;
-                        end;
-                dec(b);
-                y:=y+ystep;
-                end;
-        MyProgressBar.Position:=round( (100*(a-stx))/size );
-        inc(a);
-        r:=r+rstep;
-        if a mod RefreshRate = 0 then begin Application.ProcessMessages; end;
-        end;
-end;
-
-procedure TForm1.PrintYvFluctOnPip(var TheModel:AnyModel;stx,sty,size:integer);
-var     ystep,y:double;
-        fstep,flu:double;
-        a,b:integer;
-const   title= 'Fluctuation versus Y plot' ;
-begin
-a:=1;b:=1;   BorderedTextOut(pip.Canvas,a,b,3,3,title);
-a:=a+2;b:=1; BorderedTextOut(pip.Canvas,a,b,3,3,TheModel.title);
-pip.Canvas.Pen.Color:=clMaroon;
-DrawGraphConstrains(pip.Canvas,stx-1,sty+size+1,-20,double2str(MinY,FlpLenght,FlpPrec),double2str(MinFluct,FlpLenght,FlpPrec)); {0,0}
-DrawGraphConstrains(pip.Canvas,stx+size+1,sty-1,20,double2str(MaxY,FlpLenght,FlpPrec),double2str(MaxFluct,FlpLenght,FlpPrec));  {Max,Max}
-pip.Canvas.Pen.Color:=clBlack;
-
-fstep:=abs(MaxFluct-MinFluct)/(Size);
-ystep:=abs(MaxY-MinY)/(Size);
-flu:=MinFluct;
-a:=stx;
-while flu<=MaxFluct do
-        begin
-        y:=MinY;
-        b:=sty+Size-1;
-
-        while y<=MaxY do
-                begin
-                TheModel.SetFluct(flu);
-                if TheModel.IsInvasion(defaultX,y) then
-                        begin
-                        if TheModel.WasSpecial<>0 then
-                                pip.Canvas.Pixels[a,b]:=clTable[TheModel.WasSpecial]
-                                else
-                                pip.Canvas.Pixels[a,b]:=clBlack
-                        end
-                        else
-                        begin
-                        if TheModel.WasSpecial<>0 then
-                                pip.Canvas.Pixels[a,b]:=clTable[TheModel.WasSpecial]
-                                else
-                                pip.Canvas.Pixels[a,b]:=clYellow;
-                        end;
-                dec(b);
-                y:=y+ystep;
-                end;
-        MyProgressBar.Position:=round( (100*(a-stx))/size );
-        inc(a);
-        flu:=flu+fstep;
-        if a mod RefreshRate = 0 then begin Application.ProcessMessages; end;
-        end;
-end;
-
-procedure TForm1.PrintBranchingOnPip(var TheModel:AnyModel;stx,sty,Size:integer);
-var     xstep,ystep,x,y:double;
-        a,b,val:integer;
-const   title= 'Fluctuation versus Sigma plot' ;
-begin
-a:=1;b:=1;   BorderedTextOut(pip.Canvas,a,b,3,3,title);
-a:=a+2;b:=1; BorderedTextOut(pip.Canvas,a,b,3,3,TheModel.title);
-pip.Canvas.Pen.Color:=clMaroon;
-DrawGraphConstrains(pip.Canvas,stx-1,sty+size+1,-20,double2str(MinSigma,FlpLenght,FlpPrec),double2str(MinFluct,FlpLenght,FlpPrec)); {0,0}
-DrawGraphConstrains(pip.Canvas,stx+size+1,sty-1,20,double2str(MaxSigma,FlpLenght,FlpPrec),double2str(MaxFluct,FlpLenght,FlpPrec));  {Max,Max}
-pip.Canvas.Pen.Color:=clBlack;
-
-xstep:=abs(MaxFluct-MinFluct)/(Size);
-ystep:=abs(MaxSigma-MinSigma)/(Size);
-x:=MinFluct;
-a:=stx;
-while x<=MaxFluct do
-        begin
-        y:=MinSigma;
-        b:=sty+Size-1;
-
-        while y<=MaxSigma do
-                begin
-                val:=TheModel.IsESSorBranching(y,x);
-                pip.Canvas.Pixels[a,b]:=clTable[val];
-
-                dec(b);
-                y:=y+ystep;
-                end;
-        MyProgressBar.Position:=round( (100*(a-stx))/size );
-        inc(a);
-        x:=x+xstep;
-
-        if a mod RefreshRate = 0 then begin Application.ProcessMessages; end;
-        end;
-end;
-
-procedure TForm1.FittBranchingOnPip(stx,sty,size:integer);
-var kstep,xstep,sstep,k,y,x,s_y,s_x:double;
-    a,b,c:integer;
-const   title= 'Analitical ESS/branching border for the model #3' ;
-begin
-a:=pip.ClientWidth-pip.Canvas.TextWidth(title)-12;
-b:=1;
-BorderedTextOut(pip.Canvas,a,b,3,3,title);
-DrawGraphConstrains(pip.Canvas,stx,sty+size,-20,double2str(MinSigma,FlpLenght,FlpPrec),double2str(MinFluct,FlpLenght,FlpPrec)); {0,0}
-DrawGraphConstrains(pip.Canvas,stx+size,sty,20,double2str(MaxSigma,FlpLenght,FlpPrec),double2str(MaxFluct,FlpLenght,FlpPrec));  {Max,Max}
-
-kstep:=1.0/(Size);
-xstep:=abs(MaxFluct-MinFluct)/(Size);
-sstep:=abs(MaxSigma-MinSigma)/(Size);
-k:=0;
-a:=stx;c:=0;
-while k<=1 do
-        begin
-        y:=TheModel3.TransitionValue(k);
-        x:=k*y;
-{        if TheModel3.WasSpecial<>0 then
-                begin
-                                   }
-        s_y:=(y-MinSigma)/(MaxSigma-MinSigma);
-        s_x:=(x-MinFluct)/(MaxFluct-MinFluct);
-
-        if (s_y<=MaxSigma) and (s_y>=MinSigma) and
-         (s_x<=MaxFluct) and (s_x>=MinFluct) then
-                begin
-                a:=stx+round(Size*s_x);
-                b:=sty+Size-round(Size*s_y);
-                pip.Canvas.Pixels[a,b]:=clAqua;
-                end
-                else
-                begin
-                kstep:=1.0/(Size);
-                end;
-
-        MyProgressBar.Position:=round( (c)/size *100 );
-        k:=k+kstep;
-        inc(c);
-        if c mod RefreshRate = 0 then begin Application.ProcessMessages; end;
-        end;
+BringToFront;
 end;
 
 procedure TForm1.ButtonBranchFittClick(Sender: TObject);
 begin
 if CheckBoxClean.Checked=True then
-        pip.Canvas.FillRect(pip.Canvas.ClipRect);
-MyProgressBar.Position:=0;
-TheModel3.init(Rate,Sigma,StartingConcentration,FluctiationRange);
-FittBranchingOnPip(300-pipSize div 2,300-pipSize div 2,pipSize);
-MyProgressBar.Position:=0;
+        FormPicture.pip.Canvas.FillRect(FormPicture.pip.Canvas.ClipRect);
+
+FormPicture.MyProgressBar.Position:=0;
+FormPicture.Show;FormPicture.BringToFront;
+case ModelIndex of
+3:begin
+        TheModel3a.init(Rate,Sigma,StartingConcentration,FluctiationRange);
+        CurrentModel:=@TheModel3a;
+        FormPicture.FittBranchingOnPip(TheModel3a,300-pipSize div 2,300-pipSize div 2,pipSize,2);
+end;
+5:begin
+        TheModel3b.init(Rate,Sigma,StartingConcentration,FluctiationRange);
+        CurrentModel:=@TheModel3b;
+        FormPicture.FittBranchingOnPip(TheModel3b,300-pipSize div 2,300-pipSize div 2,pipSize,2);
+end;
+6:begin
+        TheModel3c.init(Rate,Sigma,StartingConcentration,FluctiationRange);
+        CurrentModel:=@TheModel3c;
+        FormPicture.FittBranchingOnPip(TheModel3c,300-pipSize div 2,300-pipSize div 2,pipSize,2);
+end
+else
+  begin
+        Application.MessageBox('Only for "Model 3" family.','WARNING')
+  end;
+end{case};
+
+FormPicture.MyProgressBar.Position:=0;
+end;
+
+procedure TForm1.ButtonSpecialClick(Sender: TObject);
+var old:boolean;
+    OLDKF:double;
+begin
+if CheckBoxClean.Checked=True then
+        begin
+        FormPicture.pip.Canvas.FillRect(FormPicture.pip.Canvas.ClipRect);
+        TheModel1.init(Rate,Sigma);
+        FormPicture.PrintBranchingOnPip(TheModel1,300-pipSize div 2,300-pipSize div 2,pipSize);
+        FormPicture.MyProgressBar.Position:=0;
+        end;
+
+OLDKF:=FITT_K_FACTOR;EditKFactor.Enabled:=false;
+{if Rate>1 then
+        begin
+        FITT_K_FACTOR:=1/Rate;
+        EditKFactor.Text:=double2str(FITT_K_FACTOR,8,6);
+        end;                                            }
+old:=CheckBoxClean.Checked;
+CheckBoxClean.Enabled:=false;CheckBoxClean.Checked:=false;
+
+FormPicture.MyProgressBar.Position:=0;
+FormPicture.Show;FormPicture.BringToFront;
+
+TheModel3a.init(Rate,Sigma,StartingConcentration,FluctiationRange);
+CurrentModel:=@TheModel3a;
+FormPicture.FittBranchingOnPip(TheModel3a,300-pipSize div 2,300-pipSize div 2,pipSize,Round(2+Rate));
+
+TheModel3b.init(Rate,Sigma,StartingConcentration,FluctiationRange);
+CurrentModel:=@TheModel3b;
+FormPicture.FittBranchingOnPip(TheModel3b,300-pipSize div 2,300-pipSize div 2,pipSize,Round(2+Rate));
+
+TheModel3c.init(Rate,Sigma,StartingConcentration,FluctiationRange);
+CurrentModel:=@TheModel3c;
+FormPicture.FittBranchingOnPip(TheModel3c,300-pipSize div 2,300-pipSize div 2,pipSize,Round(2+Rate));
+
+CheckBoxClean.Checked:=old;CheckBoxClean.Enabled:=true;
+FormPicture.MyProgressBar.Position:=0;
+
+FITT_K_FACTOR:=OLDKF;EditKFactor.Enabled:=true;
+EditKFactor.Text:=double2str(FITT_K_FACTOR,8,6);
+end;
+
+procedure TForm1.InitModels;
+begin
+case ModelIndex of
+1:begin TheModel1.init(Rate,Sigma);
+        CurrentModel:=@TheModel1;
+        end;
+2:begin TheModel2.init(Rate,Sigma,StartingConcentration);
+        CurrentModel:=@TheModel2;
+        end;
+
+3:begin TheModel3a.init(Rate,Sigma,StartingConcentration,FluctiationRange);
+        CurrentModel:=@TheModel3a;
+        end;
+
+5:begin TheModel3b.init(Rate,Sigma,StartingConcentration,FluctiationRange);
+        CurrentModel:=@TheModel3b;
+        end;
+
+6:begin TheModel3c.init(Rate,Sigma,StartingConcentration,FluctiationRange);
+        CurrentModel:=@TheModel3c;
+        end;
+
+4:begin TheModel4.init(Rate,Sigma,StartingConcentration,MutantStartingConcentration,FluctiationRange);
+        CurrentModel:=@TheModel4;
+        end;
+end {case};
 end;
 
 procedure TForm1.ButtonESSClick(Sender: TObject);
 begin
+with FormPicture do
+begin
 if CheckBoxClean.Checked=True then
         pip.Canvas.FillRect(pip.Canvas.ClipRect);
 MyProgressBar.Position:=0;
-case ModelIndex of
-1:begin TheModel1.init(Rate,Sigma);
-        CurrentModel:=@TheModel1;
-        end;
-2:begin TheModel2.init(Rate,Sigma,StartingConcentration);
-        CurrentModel:=@TheModel2;
-        end;
-3:begin TheModel3.init(Rate,Sigma,StartingConcentration,FluctiationRange);
-        CurrentModel:=@TheModel3;
-        end;
-4:begin TheModel4.init(Rate,Sigma,StartingConcentration,MutantStartingConcentration,FluctiationRange);
-        CurrentModel:=@TheModel4;
-        end;
-end {case};
-
+InitModels;
+Show;BringToFront;
 PrintBranchingOnPip(CurrentModel^,300-pipSize div 2,300-pipSize div 2,pipSize);MyProgressBar.Position:=0;
+end{with};
 end;
 
 procedure TForm1.ButtonYvSigmaClick(Sender: TObject);
 begin
+with FormPicture do
+begin
 if CheckBoxClean.Checked=True then
         pip.Canvas.FillRect(pip.Canvas.ClipRect);
-
-case ModelIndex of
-1:begin TheModel1.init(Rate,Sigma);
-        CurrentModel:=@TheModel1;
-        end;
-2:begin TheModel2.init(Rate,Sigma,StartingConcentration);
-        CurrentModel:=@TheModel2;
-        end;
-3:begin TheModel3.init(Rate,Sigma,StartingConcentration,FluctiationRange);
-        CurrentModel:=@TheModel3;
-        end;
-4:begin TheModel4.init(Rate,Sigma,StartingConcentration,MutantStartingConcentration,FluctiationRange);
-        CurrentModel:=@TheModel4;
-        end;
-end {case};
-
+InitModels;
+Show;BringToFront;
 PrintYvSigmaOnPip(CurrentModel^,300-pipSize div 2,300-pipSize div 2,pipSize);MyProgressBar.Position:=0;
+end{with};
 end;
 
 procedure TForm1.ButtonYvRClick(Sender: TObject);
 begin
+with FormPicture do
+begin
  if CheckBoxClean.Checked=True then
         pip.Canvas.FillRect(pip.Canvas.ClipRect);
-
-case ModelIndex of
-1:begin TheModel1.init(Rate,Sigma);
-        CurrentModel:=@TheModel1;
-        end;
-2:begin TheModel2.init(Rate,Sigma,StartingConcentration);
-        CurrentModel:=@TheModel2;
-        end;
-3:begin TheModel3.init(Rate,Sigma,StartingConcentration,FluctiationRange);
-        CurrentModel:=@TheModel3;
-        end;
-4:begin TheModel4.init(Rate,Sigma,StartingConcentration,MutantStartingConcentration,FluctiationRange);
-        CurrentModel:=@TheModel4;
-        end;
-end {case};
-
+InitModels;
+Show;BringToFront;
 PrintYvROnPip(CurrentModel^,300-pipSize div 2,300-pipSize div 2,pipSize);MyProgressBar.Position:=0;
+end{with};
 end;
 
 procedure TForm1.ButtonYvFluctClick(Sender: TObject);
 begin
-if CheckBoxClean.Checked=True then
-        pip.Canvas.FillRect(pip.Canvas.ClipRect);
-
-case ModelIndex of
-1:begin TheModel1.init(Rate,Sigma);
-        CurrentModel:=@TheModel1;
-        end;
-2:begin TheModel2.init(Rate,Sigma,StartingConcentration);
-        CurrentModel:=@TheModel2;
-        end;
-3:begin TheModel3.init(Rate,Sigma,StartingConcentration,FluctiationRange);
-        CurrentModel:=@TheModel3;
-        end;
-4:begin TheModel4.init(Rate,Sigma,StartingConcentration,MutantStartingConcentration,FluctiationRange);
-        CurrentModel:=@TheModel4;
-        end;
-end {case};
-
-PrintYvFluctOnPip(CurrentModel^,300-pipSize div 2,300-pipSize div 2,pipSize);MyProgressBar.Position:=0;
-end;
-
-
-procedure TForm1.OKClick(Sender: TObject);
-var
-        MyName:string[255];
+with FormPicture do
 begin
 if CheckBoxClean.Checked=True then
         pip.Canvas.FillRect(pip.Canvas.ClipRect);
+InitModels;
+Show;BringToFront;
+PrintYvFluctOnPip(CurrentModel^,300-pipSize div 2,300-pipSize div 2,pipSize);MyProgressBar.Position:=0;
+end{with};
+end;
 
-case ModelIndex of
-1:begin TheModel1.init(Rate,Sigma);
-        CurrentModel:=@TheModel1;
-        end;
-2:begin TheModel2.init(Rate,Sigma,StartingConcentration);
-        CurrentModel:=@TheModel2;
-        end;
-3:begin TheModel3.init(Rate,Sigma,StartingConcentration,FluctiationRange);
-        CurrentModel:=@TheModel3;
-        end;
-4:begin TheModel4.init(Rate,Sigma,StartingConcentration,MutantStartingConcentration,FluctiationRange);
-        CurrentModel:=@TheModel4;
-        end;
-end {case};
 
+procedure TForm1.ButtonInvExtClick(Sender: TObject);
+var
+        MyName:string[255];
+begin
+with FormPicture do
+begin
+if CheckBoxClean.Checked=True then
+        pip.Canvas.FillRect(pip.Canvas.ClipRect);
+InitModels;
+Show;BringToFront;
 PrintOnPip(CurrentModel^,300-pipSize div 2,300-pipSize div 2,pipSize);MyProgressBar.Position:=0;
 if  CheckBoxAutoSave.Checked then
         begin
         MyName:=Int2str(pipSize,3)+CurrentModel^.TentativeBmpFileName;
         pip.Picture.SaveToFile(MyName);
         end;
+end{with};
 end;
 
 procedure TForm1.EditForRateChange(Sender: TObject);
@@ -563,6 +322,11 @@ begin
 ChangeDoubleFromEditBox(defaultY,EditYdef,MinY,MaxY);
 end;
 
+procedure TForm1.EditKFactorChange(Sender: TObject);
+begin
+ChangeDoubleFromEditBox(FITT_K_FACTOR,EditKFactor,0.00001,1000);
+end;
+
 
 procedure TForm1.EditPipSizeChange(Sender: TObject);
 var     R:integer;
@@ -597,7 +361,7 @@ if c<>0 then
         end
         else
         begin
-        if (R>0) and (R<=4) then
+        if (R>0) and (R<=6) then
                         begin
                         ModelIndex:=R;
                         EditModelIndex.Color:=clWhite;
@@ -610,20 +374,29 @@ case  ModelIndex of
 1:begin
         EditIterations.Enabled:=false;
         EditFluctuation.Enabled:=false;
+        EditConcentration.Enabled:=false;
+        EditMutConcentration.Enabled:=false;
         end;
 2:begin
-        EditIterations.Enabled:=false;
+        EditIterations.Enabled:=true;
+        EditIterations.Text:=Int2str(FITNESS_ITER,0);
         EditFluctuation.Enabled:=false;
+        EditConcentration.Enabled:=true;
+        EditMutConcentration.Enabled:=false;
         end;
-3:begin
+3,5,6:begin
         EditIterations.Enabled:=true;
         EditIterations.Text:=Int2str(FITNESS_ITER,0);
         EditFluctuation.Enabled:=true;
+        EditConcentration.Enabled:=true;
+        EditMutConcentration.Enabled:=false;
         end;
 4:begin
         EditIterations.Enabled:=true;
         EditIterations.Text:=Int2str(RATIO_ITER,0);
         EditFluctuation.Enabled:=true;
+        EditConcentration.Enabled:=true;
+        EditMutConcentration.Enabled:=true;
         end;
 end{case};
 
@@ -644,7 +417,7 @@ if c<>0 then
         if (R>200) and (R<=100000) then
                         begin
                         case ModelIndex of
-                        3:FITNESS_ITER:=R;
+                        2,3,5,6:FITNESS_ITER:=R;
                         4:RATIO_ITER:=R;
                         end;
                         EditIterations.Color:=clWhite;
@@ -668,13 +441,25 @@ RefreshRate:=SpinEditRefRate.Value;
 if RefreshRate=0 then RefreshRate:=1000;
 end;
 
+procedure TForm1.ButtonByeClick(Sender: TObject);
 begin
-TheModel1.startbis;
-TheModel2.startbis;
-TheModel3.startbis;
-TheModel4.startbis;
+Application.Terminate;
+end;
+
+procedure TForm1.ButtonWhereIsPictureClick(Sender: TObject);
+begin
+FormPicture.WindowState:=wsNormal;
+FormPicture.Show;
+end;
 
 
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  EditIterations.Enabled:=false;
+  EditFluctuation.Enabled:=false;
+  EditConcentration.Enabled:=false;
+  EditMutConcentration.Enabled:=false;
+end;
 
 
 end.

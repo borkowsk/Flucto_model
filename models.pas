@@ -1,7 +1,7 @@
 unit models;
 
 interface
-uses SmallTools;
+uses SmallTools,Graphics;
 type
 
 AnyModel=object
@@ -57,20 +57,40 @@ model3=object(AnyModel)
         FluctRange:double;
         Nr:double;{Density of resident}
         constructor startbis;
+        function PreferedColor:TColor;virtual;
         procedure init(ir,isigma,StCnc,iFluctRange:double);
         procedure SetFluct(iflu:double);virtual;
         function TentativeBmpFileName:string;virtual;
         procedure iterate_resident(t:integer;x:double);{t - how many times}
         function iterate_with_mut(t:integer;x,y:double):double;{t - how many times}
-        procedure CalcNewMu;
+        procedure CalcNewMu;virtual;
         function Mu:real;       { random mean value of K }
         function K(x,Mean:double):double;
         function Alfa(x,y:double):double;
         function Fitness(x,y:double):double;
         function IsInvasion(x,y:double):boolean;virtual;
         {Searching for ESS}
+        function kt(krange:double):double;virtual;{Randimisation of 'k' (small k)}
         function IsESSorBranching(newsigma,fluct:double):integer;virtual;
         function TransitionValue(krange:double):double;virtual; {Where is the transition/bifurcation}
+end;
+
+model3_two_value=object(model3)
+        constructor startbis;
+        function PreferedColor:TColor;virtual;
+        function TentativeBmpFileName:string;virtual;
+        procedure CalcNewMu;virtual;
+        {Searching for ESS}
+        function kt(krange:double):double;virtual;{Randimisation of 'k' (small k)}
+end;
+
+model3_gausian=object(model3)
+        constructor startbis;
+        function PreferedColor:TColor;virtual;
+        function TentativeBmpFileName:string;virtual;
+        procedure CalcNewMu;virtual;
+        {Searching for ESS}
+        function kt(krange:double):double;virtual;{Randimisation of 'k' (small k)}
 end;
 
 model4=object(AnyModel)
@@ -108,7 +128,9 @@ const   MEAN_WINDOW=100;
         SMALEST_K=0.00000000000001;   {Value of K considered as 0}
         SAMPLE_DIVIDER=2;       {For ESS sampling}
 
-var     DefaultX:double=0;
+var     XStep,YStep,RateStep,SigmaStep,StartConcStep,MutStartConcStep,FluctStep:integer;
+
+        DefaultX:double=0;
         MinX:double=-3;
         MaxX:double=3;
 
@@ -136,18 +158,25 @@ var     DefaultX:double=0;
         MinFluct:double=0.0000000000001;
         MaxFluct:double=1.0;
 
-implementation
+        TheModel1:model1;
+        TheModel2:model2;
+        TheModel3a:model3;
+        TheModel4:model4;
+        TheModel3b:model3_two_value;
+        TheModel3c:model3_gausian;
+        CurrentModel:^AnyModel=nil;
 
+implementation
+uses flocto_int;
 
 {MODEL 4=======================================================================}
 constructor Model4.startbis;
 begin
-Title:='The model #4';
+Title:='the model #4';
 end;
 
 procedure  model4.init(ir,isigma,ResStCnc,MutStCnc,iFluctRange:double);
 begin
-Title:='The model #3';
 r:=ir;
 sigma:=isigma;
 St:=ResStCnc;
@@ -184,7 +213,7 @@ Mu:=MyRnd;
 end;
 
 function model4.K(x,mean:double):double;
-var p,RND:double;
+var p:double;
 begin
 p:=-sqr(x-mean)/(2*sqr(sigma));
 K:=exp(p);
@@ -328,12 +357,36 @@ end;
 {MODEL 3=======================================================================}
 constructor Model3.startbis;
 begin
-Title:='The model #3';
+Title:='the uniform model #3';
+end;
+
+constructor model3_two_value.startbis;
+begin
+Title:='the two-valued model #3';
+end;
+
+constructor model3_gausian.startbis;
+begin
+Title:='the "Gausian" model #3';
+end;
+
+function Model3.PreferedColor:TColor;
+begin
+result:=clAqua;
+end;
+
+function model3_two_value.PreferedColor:TColor;
+begin
+result:=clOlive;
+end;
+
+function model3_gausian.PreferedColor:TColor;
+begin
+result:=clSilver;
 end;
 
 procedure  model3.init(ir,isigma,StCnc,iFluctRange:double);
 begin
-Title:='The model #3';
 r:=ir;
 sigma:=isigma;
 St:=StCnc;
@@ -355,10 +408,19 @@ name:='Model3_'+double2str(r,DEF_PLEN,DEF_PPREC)+'_'+double2str(sigma,DEF_PLEN,D
 TentativeBmpFileName:=name;
 end;
 
-procedure model3.CalcNewMu;
+function model3_two_value.TentativeBmpFileName:string;
+var name:string[255];
 begin
-MyRnd:=0.5*FluctRange - Random*FluctRange;
-{                        [0..1]*0.5}
+name:='Model3b_'+double2str(r,DEF_PLEN,DEF_PPREC)+'_'+double2str(sigma,DEF_PLEN,DEF_PPREC)+'_'+double2str(St,DEF_PLEN,DEF_PPREC)+double2str(FluctRange,DEF_PLEN,DEF_PPREC)+'.bmp';
+TentativeBmpFileName:=name;
+end;
+
+
+function model3_gausian.TentativeBmpFileName:string;
+var name:string[255];
+begin
+name:='Model3c_'+double2str(r,DEF_PLEN,DEF_PPREC)+'_'+double2str(sigma,DEF_PLEN,DEF_PPREC)+'_'+double2str(St,DEF_PLEN,DEF_PPREC)+double2str(FluctRange,DEF_PLEN,DEF_PPREC)+'.bmp';
+TentativeBmpFileName:=name;
 end;
 
 function model3.Mu:real;       { random mean value of K }
@@ -501,6 +563,53 @@ init(r,newsigma,St,fluct);
 result:=AnyModel.IsESSorBranching(newsigma,fluct);
 end;
 
+procedure model3.CalcNewMu;
+begin
+MyRnd:=0.5*FluctRange - Random*FluctRange;
+{                        [0..1]*0.5}
+end;
+
+procedure model3_two_value.CalcNewMu;
+begin
+if Random<0.5 then
+        MyRnd:=-0.5*FluctRange
+        else
+        MyRnd:=0.5*FluctRange;
+end;
+
+procedure model3_gausian.CalcNewMu;
+var Gaus:double;
+begin
+repeat
+Gaus:=random+random+random+random+random+random+random+random+random+random+random+random;
+Gaus:=(Gaus-6)*FluctRange/4.0;
+until abs(Gaus)<= FluctRange/2.0 ;
+MyRnd:=Gaus;
+end;
+
+function model3.kt(krange:double):double;{Randimisation of 'k' (small k)}
+begin
+    kt:=krange/2.0-Random*krange;
+end;
+
+function model3_two_value.kt(krange:double):double;{Randimisation of 'k' (small k)}
+begin
+if Random<0.5 then
+        result:=-0.5*krange
+        else
+        result:=0.5*krange;
+end;
+
+function model3_gausian.kt(krange:double):double;{Randimisation of 'k' (small k)}
+var Gaus:double;
+begin
+repeat
+Gaus:=random+random+random+random+random+random+random+random+random+random+random+random;
+Gaus:=(Gaus-6)*krange/4.0;
+until abs(Gaus)<= krange/2.0 ;
+result:=Gaus;
+end;
+
 function model3.TransitionValue(krange:double):double; {Where is the transition/bifurcation at singularity x}
 var     cur_kt,exp_kt2:double;
         summ_numerator:double;
@@ -509,11 +618,6 @@ var     cur_kt,exp_kt2:double;
         denominator:double;
 
         t:integer;
-
-    function kt(krange:double):double;{Randimisation of 'k' (small k)}
-    begin
-    kt:=krange/2.0-Random*krange;
-    end;
 begin
 SpecialFlag:=0;
 Nr:=St*K(0,0);
@@ -543,7 +647,7 @@ for t:=0 to FITNESS_ITER do
         exp_kt2:=exp( sqr(cur_kt)/2 );
 
         {part 1}
-        numerator:=(1+sqr(cur_kt)*exp_kt2);
+        numerator:=(1+sqr(cur_kt))*exp_kt2;
         numerator:=numerator/(1+r-r*Nr*exp_kt2);
         numerator:=numerator+(r*Nr*sqr(cur_kt)*exp(sqr(cur_kt)))/sqr(1+r-r*Nr*exp_kt2);
         numerator:=numerator*Nr;
@@ -574,6 +678,7 @@ if summ_denominator<>0 then
         else
         begin
         result:=-1000000000000000;
+        SpecialFlag:=3;
         end;
 end;
 
@@ -845,17 +950,6 @@ if WasSpecial<>0 then
 
 val:=integer(fy1)+integer(fy2)+integer(fy3)+integer(fy4);
 result:=-val;
-{
-if val=0 then
-        begin
-        result:=0;exit;
-        end
-        else
-        if val=4 then
-                begin
-                result:=-1;exit;
-                end;
-result:=-3;}
 end;
 
 procedure  AnyModel.SetR(ir:double);
@@ -873,4 +967,19 @@ begin
 
 end;
 
+begin
+TheModel1.startbis;
+TheModel2.startbis;
+TheModel3a.startbis;
+TheModel4.startbis;
+TheModel3b.startbis;
+TheModel3c.startbis;
+
+XStep:=11;
+YStep:=11;
+RateStep:=11;
+SigmaStep:=11;
+StartConcStep:=11;
+MutStartConcStep:=11;
+FluctStep:=11;
 end.
