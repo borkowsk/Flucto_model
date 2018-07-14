@@ -1,22 +1,17 @@
-Adaptive Dynamics of Competitors in Fluctuating Environments
+Adaptive Dynamics of Competitors in Fluctuating Environments     DOI: 10.13140/RG.2.1.4872.3689
+(final full text avaliable here: https://www.researchgate.net/publication/276059019_Adaptive_Dynamics_of_Competitors_in_Fluctuating_Environments )
+
+
+Wojciech Borkowski(1), Pavel T. Stoynov(2), Eva Kisdi(3)
 
 
 
-Wojciech Borkowski1, Pavel T. Stoynov2, Eva Kisdi3
-
-
-
-1Institute for Social Studies, Warsaw University, Warsaw, Poland
-2Department of Statistics and Econometrics, University St Kliment Ohridski, Sofia, Bulgaria
-3Department of Mathematics, University of Turku, FIN-20014 Turku, Finland
-
-
-Abstract
-
+1 Institute for Social Studies, Warsaw University, Warsaw, Poland
+2 Department of Statistics and Econometrics, University St Kliment Ohridski, Sofia, Bulgaria
+3 Department of Mathematics, University of Turku, FIN-20014 Turku, Finland
 
 
 Keywords: competition, evolutionary branching, speciation, stochastic environments
-
 
 1. Introduction
 The origin of species is one of the most long-standing problems in evolutionary biology. It is generally accepted that species can originate if populations are isolated by distance for a long time (allopatric speciation; Mayr 1963). The possibility of speciation within a single population (sympatric speciation) has long been debated (Felsenstein 1981; Butlin 1989), but is recently gaining weight (Via 2001). For sympatric speciation to occur, selection must favour diversity, and the emerging species must become reproductively isolated such that no significant hybridisation occurs.
