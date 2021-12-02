@@ -70,7 +70,7 @@ model3=object(AnyModel)
         function Fitness(x,y:double):double;
         function IsInvasion(x,y:double):boolean;virtual;
         {Searching for ESS}
-        function kt(krange:double):double;virtual;{Randimisation of 'k' (small k)}
+        function kt(krange:double):double;virtual;{Randomisation of 'k' (small k)}
         function IsESSorBranching(newsigma,fluct:double):integer;virtual;
         function TransitionValue(krange:double):double;virtual; {Where is the transition/bifurcation}
 end;
@@ -81,7 +81,7 @@ model3_two_value=object(model3)
         function TentativeBmpFileName:string;virtual;
         procedure CalcNewMu;virtual;
         {Searching for ESS}
-        function kt(krange:double):double;virtual;{Randimisation of 'k' (small k)}
+        function kt(krange:double):double;virtual;{Randomisation of 'k' (small k)}
 end;
 
 model3_gausian=object(model3)
@@ -90,24 +90,24 @@ model3_gausian=object(model3)
         function TentativeBmpFileName:string;virtual;
         procedure CalcNewMu;virtual;
         {Searching for ESS}
-        function kt(krange:double):double;virtual;{Randimisation of 'k' (small k)}
+        function kt(krange:double):double;virtual;{Randomisation of 'k' (small k)}
 end;
 
 model4=object(AnyModel)
-        St:double;{ Relative density of resident at start }
-        Sm:double;{ Relative density of mutant when invasion starting }
+        St:double;      { Relative density of resident at start }
+        Sm:double;      { Relative density of mutant when invasion starting }
         MyRnd:double;
         FluctRange:double;
-        Nr:double;{Density of resident}
-        Nm:double;{Density of mutant}
+        Nr:double;                                      {Density of resident}
+        Nm:double;                                      {Density of mutant}
         constructor startbis;
         procedure init(ir,isigma,ResStCnc,MutStCnc,iFluctRange:double);
         procedure SetFluct(iflu:double);virtual;
         function TentativeBmpFileName:string;virtual;
-        procedure iterate_resident(t:integer;x:double);{t - how many times}
+        procedure iterate_resident(t:integer;x:double); {t - how many times}
         function iterate_with_mut(t:integer;x,y:double):double;{t - how many times}
         procedure CalcNewMu;
-        function Mu:real;       { random mean value of K }
+        function Mu:real;                               { random mean value of K }
         function K(x,Mean:double):double;
         function Alfa(x,y:double):double;
         function Ratio(x,y:double):double;
@@ -125,8 +125,8 @@ const   MEAN_WINDOW=100;
         DEF_PLEN=12;
         DEF_PPREC=10;
         EPSILON=0.0001;
-        SMALEST_K=0.00000000000001;   {Value of K considered as 0}
-        SAMPLE_DIVIDER=2;       {For ESS sampling}
+        SMALEST_K=0.00000000000001;     {Value of K considered as 0}
+        SAMPLE_DIVIDER=2;               {For ESS sampling}
 
 var     XStep,YStep,RateStep,SigmaStep,StartConcStep,MutStartConcStep,FluctStep:integer;
 
@@ -253,8 +253,8 @@ for i:=1 to t do
 end;
 
 function model4.iterate_with_mut(t:integer;x,y:double):double;{t - how many times}
-var     i:integer;{which iteration of eqution}
-        summ:double;{summ of logarithms of lambda}
+var     i:integer;      {which iteration of eqution}
+        summ:double;    {summ of logarithms of lambda}
         OldNr:double;
         curK:double;
 begin
@@ -318,7 +318,7 @@ SpecialFlag:=0;
 
 Nr:=St*K(x,0);
 
-Nm:=Sm*Nr;{Introducting of a mutant as a part of current density of a resident}
+Nm:=Sm*Nr;      {Introducting of a mutant as a part of current density of a resident}
 
 iterate_resident(SILENT_ITER,x);
 
@@ -443,14 +443,14 @@ Alfa:=exp(p);
 end;
 
 procedure model3.iterate_resident(t:integer;x:double);{t - how many times}
-var     i:integer;{which iteration of eqution}
+var     i:integer;      {which iteration of eqution}
         curK:double;
 begin
 for i:=1 to t do
         begin
         CalcNewMu;
 
-        curK:=K(x,Mu);{May be 0 because od floating point calculation }
+        curK:=K(x,Mu);  {May be 0 because od floating point calculation }
         if curK<SMALEST_K then
                 begin
                 {Ups...}
@@ -469,8 +469,8 @@ for i:=1 to t do
 end;
 
 function model3.iterate_with_mut(t:integer;x,y:double):double;{t - how many times}
-var     i:integer;{which iteration of eqution}
-        summ:double;{summ of logarithms of lambda}
+var     i:integer;      {which iteration of eqution}
+        summ:double;    {summ of logarithms of lambda}
         lambda,curK:double;
 begin
 summ:=0;
@@ -490,7 +490,7 @@ for i:=1 to t do
 
         lambda:=1+r-r*( (alfa(x,y)*Nr) / curK );
 
-        curK:=K(x,Mu);{May be 0 because od floating point calculation }
+        curK:=K(x,Mu);  {May be 0 because od floating point calculation }
 
         if curK<SMALEST_K then
                 begin
@@ -587,12 +587,12 @@ until abs(Gaus)<= FluctRange/2.0 ;
 MyRnd:=Gaus;
 end;
 
-function model3.kt(krange:double):double;{Randimisation of 'k' (small k)}
+function model3.kt(krange:double):double;               {Randomisation of 'k' (small k)}
 begin
     kt:=krange/2.0-Random*krange;
 end;
 
-function model3_two_value.kt(krange:double):double;{Randimisation of 'k' (small k)}
+function model3_two_value.kt(krange:double):double;     {Randomisation of 'k' (small k)}
 begin
 if Random<0.5 then
         result:=-0.5*krange
@@ -600,7 +600,7 @@ if Random<0.5 then
         result:=0.5*krange;
 end;
 
-function model3_gausian.kt(krange:double):double;{Randimisation of 'k' (small k)}
+function model3_gausian.kt(krange:double):double;       {Randomisation of 'k' (small k)}
 var Gaus:double;
 begin
 repeat
@@ -610,7 +610,7 @@ until abs(Gaus)<= krange/2.0 ;
 result:=Gaus;
 end;
 
-function model3.TransitionValue(krange:double):double; {Where is the transition/bifurcation at singularity x}
+function model3.TransitionValue(krange:double):double;  {Where is the transition/bifurcation at singularity x}
 var     cur_kt,exp_kt2:double;
         summ_numerator:double;
         numerator:double;
@@ -622,8 +622,7 @@ begin
 SpecialFlag:=0;
 Nr:=St*K(0,0);
 
-{First loop - for achive the stable state of resident}
-for t:=0 to SILENT_ITER do
+for t:=0 to SILENT_ITER do                              {First loop - for achive the stable state of resident}
         begin
         cur_kt:=kt(krange);
         Nr:=Nr*(        1+r-r*Nr*exp( sqr(cur_kt)/2 )     );
@@ -724,7 +723,7 @@ Alfa:=exp(p);
 end;
 
 procedure model2.iterate_resident(t:integer;x:double);{t - how many times}
-var     i:integer;{which iteration of eqution}
+var     i:integer;      {which iteration of eqution}
         curK:double;
 begin
 for i:=1 to t do
@@ -747,8 +746,8 @@ for i:=1 to t do
 end;
 
 function model2.iterate_with_mut(t:integer;x,y:double):double;{t - how many times}
-var     i:integer;{which iteration of eqution}
-        summ:double;{summ of logarithms of lambda}
+var     i:integer;      {which iteration of eqution}
+        summ:double;    {summ of logarithms of lambda}
         lambda,curK:double;
 begin
 summ:=0;
@@ -983,3 +982,4 @@ StartConcStep:=11;
 MutStartConcStep:=11;
 FluctStep:=11;
 end.
+

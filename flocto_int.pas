@@ -156,7 +156,7 @@ if CheckBoxClean.Checked=True then
         end;
 
 OLDKF:=FITT_K_FACTOR;EditKFactor.Enabled:=false;
-{if Rate>1 then
+        {if Rate>1 then
         begin
         FITT_K_FACTOR:=1/Rate;
         EditKFactor.Text:=double2str(FITT_K_FACTOR,8,6);

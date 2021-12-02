@@ -32,7 +32,7 @@ with Canvas do
         MyRect.Right:=x1+width;
         MyRect.Top:=y1;
         MyRect.Bottom:=y1+TextHeight(title)+2;
-        {FillRect(MyRect);
+        {FillRect(MyRect); (*DEBUG*)
         FrameRect(MyRect);}
         TextRect(MyRect,x1,y1,title);
         x1:=MyRect.Right;
@@ -134,3 +134,4 @@ end;
 
 
 end.
+

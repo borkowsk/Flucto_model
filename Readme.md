@@ -3,7 +3,7 @@
 
 **Wojciech Borkowski(1), Pavel T. Stoynov(2), Eva Kisdi(3)**
 
-1. Institute for Social Studies, Warsaw University, Warsaw, Poland
+1. Institute for Social Studies, University of Warsaw, Warszawa, Poland
 2. Department of Statistics and Econometrics, University St Kliment Ohridski, Sofia, Bulgaria
 3. Department of Mathematics, University of Turku, FIN-20014 Turku, Finland
 
@@ -16,6 +16,10 @@ The origin of species is one of the most long-standing problems in evolutionary 
 
 Adaptive dynamics is a framework suitable to study the ecological side of sympatric speciation, i.e., whether selection in a given ecological scenario promotes the evolution of diversity. In adaptive dynamics, we assume that the evolution of some continuous trait (such as body size, weight, etc.) proceeds by rare mutations: The resident population has settled on its demographic attractor (attains its equilibrium population density or a limit cycle or ergodic stochastic distribution) by the time a rare mutant type emerges. If mutations are small (i.e., the mutant and resident have similar trait values), it can be shown that whenever the mutant is able to grow in number, it will substitute the former resident such that the resident goes extinct and the mutant becomes the new resident. With repeated steps of mutation and substitution, the trait is evolving directionally until a so-called evolutionary singularity is reached. At a singular trait value directional evolution stops, and the resident population is either resistant to the invasion of any mutant (in which case evolution has reached a final stop at an evolutionarily stable strategy, ESS), or any mutant similar to the resident can invade (see Figure 1). In the latter case, however, the invading mutant does not substitute the former resident, but both remain in the population. By subsequent mutations, the two coexisting types evolve away from each other, i.e., the population splits into two lineages of diverging trait values (evolutionary branching; Geritz et al. 1998). Evolutionary branching means selection for diversification and corresponds to sympatric speciation if reproductive isolation is established (see Dieckmann and Doebeli 1999, Geritz and Kisdi 2000).
 
-## Final full text avaliable here: 
+## Final full text of raport avaliable here: 
 
 https://www.researchgate.net/publication/276059019_Adaptive_Dynamics_of_Competitors_in_Fluctuating_Environments
+
+--------------------------------------------------
+Base: https://github.com/borkowsk/Flucto_model
+

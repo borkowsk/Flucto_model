@@ -301,7 +301,7 @@ ProgressBarOfJob.Position:=0;
 JobStepsAlong:=ComboBoxChanges.ItemIndex;
 end;
 
-{-------Implementation of jobs-------------}
+{-------Implementation of the jobs-------------}
 
 type JobSettings=record
         defval:^double;
@@ -367,7 +367,7 @@ if SavePictureDialog1.Execute  then
         Form1.CheckBoxAutoSave.Checked:=false;
         FormPicture.BringToFront;
         Directory:=SavePictureDialog1.FileName;
-        ComboBoxChanges.Enabled:=false; {Zabezpieczenie przed niezamierzona zmiana indeksu}
+        ComboBoxChanges.Enabled:=false; {Protection against unintentional index change}
         JobStart;
         for t:=1 to NumberOfSteps do
                 begin
@@ -423,7 +423,7 @@ if SavePictureDialog1.Execute  then
         Form1.CheckBoxAutoSave.Checked:=false;
         FormPicture.BringToFront;
         Directory:=SavePictureDialog1.FileName;
-        ComboBoxChanges.Enabled:=false; {Zabezpieczenie przed niezamierzona zmiana indeksu}
+        ComboBoxChanges.Enabled:=false; {Protection against unintentional index change}
         JobStart;
         for t:=1 to NumberOfSteps do
                 begin
