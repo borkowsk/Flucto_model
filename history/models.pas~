@@ -167,7 +167,7 @@ var     XStep,YStep,RateStep,SigmaStep,StartConcStep,MutStartConcStep,FluctStep:
         CurrentModel:^AnyModel=nil;
 
 implementation
-uses flucto_int;
+uses flocto_int;
 
 {MODEL 4=======================================================================}
 constructor Model4.startbis;

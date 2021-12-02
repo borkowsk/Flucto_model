@@ -117,7 +117,7 @@ var
   JobStepsAlong:integer=2;
 
 implementation
-uses flucto_int, Visualisation;
+uses flocto_int, Visualisation;
 
 {$R *.dfm}
 

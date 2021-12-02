@@ -34,7 +34,7 @@ var
 
 implementation
 
-uses flucto_int;
+uses flocto_int;
 
 {$R *.dfm}
 
