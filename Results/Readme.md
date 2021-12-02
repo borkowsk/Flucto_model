@@ -8,7 +8,7 @@ A weakness of the present model is that the Lotka-Volterra equations (eqs. 1,2 i
 
 There are many models known that predict evolutionary branching (see http://users.utu.fi/evakis/addyn.htm for a collection of references {**Link is obsolete**}): Speciation-prone ecological situations appear to be common. Now it is of interest to uncover ecological factors that hinder evolutionary branching and may prevent speciation in more realistic ecological models. One such possibility is if ecological interactions occur only locally, between a few neighbours (Day 2001; Mágori and Meszéna, in prep.). Spatial structure may impede diversification also if large, well-mixed populations are involved. Day (2000) extended the stable-environment Lotka-Volterra model discussed above for two populations connected by migration, assuming that the peak of `K(x)` is at different trait values in the two populations. He found that this spatial structure impedes evolutionary branching if migration is common, but promotes branching if migration is rare. In our model with temporal fluctuations, the changing location of the peak made evolutionary branching invariably more difficult.
 
-![Model #3 CRITICAL SIGMA MAPP]("./MOVE5 M3 CRIT SIGMA MAPP.gif" "Model #3 CRITICAL SIGMA MAPP")
+![Model #3 CRITICAL SIGMA MAPP]("https://github.com/borkowsk/Flucto_model/blob/master/Results/MOVE5%20M3%20CRIT%20SIGMA%20MAPP.gif" "Model #3 CRITICAL SIGMA MAPP")
 
 ![Model 3x3 CRITICAL SIGMA](MOVE6 M3x3 CRITICAL SIGMA.gif )
 
