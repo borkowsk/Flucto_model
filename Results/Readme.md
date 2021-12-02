@@ -13,5 +13,5 @@ There are many models known that predict evolutionary branching (see http://user
 ![Model 3 x3 CRITICAL SIGMA]( ./MOVE6_M3x3_CRITICAL_SIGMA.gif "Model #1 CRITICAL SIGMA & analitical ESS & branching border for 'Gausian' model #3 ")
 
 
-------------------------------------------------------------------
-Base: https://github.com/borkowsk/Flucto_model/tree/master/Results
+------------------------------------------------------------------------------------------------------------------------------
+Base: https://github.com/borkowsk/Flucto_model/tree/master/Results (Revised version of Flucto application for RG (2021.12.02))
