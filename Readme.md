@@ -1,4 +1,4 @@
-# Adaptive Dynamics of Competitors in Fluctuating Environments     
+# Adaptive Dynamics of Competitors in Fluctuating Environments (2002)    
 ## DOI: 10.13140/RG.2.1.4872.3689
 
 **Wojciech Borkowski(1), Pavel T. Stoynov(2), Eva Kisdi(3)**
