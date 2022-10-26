@@ -20,6 +20,8 @@ Adaptive dynamics is a framework suitable to study the ecological side of sympat
 
 https://www.researchgate.net/publication/276059019_Adaptive_Dynamics_of_Competitors_in_Fluctuating_Environments
 
+## Programing language: Fully featured multi windowed Delphi 6.0
+
 --------------------------------------------------
 Base: https://github.com/borkowsk/Flucto_model
 
